@@ -1,0 +1,322 @@
+:root {
+  font-family:
+    Inter, "Noto Sans JP", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  color: #172033;
+  background: #f3f6fb;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  border-radius: 10px;
+  padding: 0.75rem 1.1rem;
+  color: #fff;
+  background: #3157d5;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+button:hover {
+  background: #2446b7;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid #9bb2ff;
+  outline-offset: 2px;
+}
+
+.app-shell {
+  width: min(920px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 3rem 0 4rem;
+}
+
+.app-header {
+  margin-bottom: 2rem;
+}
+
+.app-header h1 {
+  margin: 0.35rem 0 0.65rem;
+  font-size: clamp(1.75rem, 5vw, 2.6rem);
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+}
+
+.app-header > p:last-child,
+.template-card p,
+.form-actions p {
+  color: #657087;
+}
+
+.app-version {
+  margin: 0;
+  color: #3157d5;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.panel {
+  padding: clamp(1.1rem, 4vw, 2rem);
+  border: 1px solid #dce2ec;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 14px 40px rgb(42 57 90 / 8%);
+}
+
+.section-heading {
+  margin-bottom: 1.4rem;
+}
+
+.section-heading h2 {
+  margin: 0.2rem 0 0;
+  font-size: 1.35rem;
+}
+
+.step-label {
+  color: #3157d5;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.template-card {
+  max-width: 560px;
+  padding: 1.5rem;
+  border: 2px solid #dbe4ff;
+  border-radius: 14px;
+  background: #f9faff;
+}
+
+.template-card h3 {
+  margin: 0.75rem 0 0.35rem;
+  font-size: 1.25rem;
+}
+
+.template-card p {
+  margin: 0 0 1rem;
+}
+
+.template-card .question-count {
+  margin-bottom: 1.25rem;
+  color: #46526a;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.genre-badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  color: #2749b8;
+  background: #e8edff;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.form-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.button-secondary {
+  flex: 0 0 auto;
+  color: #3d4960;
+  background: #edf0f5;
+  font-size: 0.88rem;
+}
+
+.button-secondary:hover {
+  background: #dfe4eb;
+}
+
+.question-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.15rem;
+}
+
+.field {
+  min-width: 0;
+}
+
+.field label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.required {
+  color: #b33434;
+  font-size: 0.68rem;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #cbd3df;
+  border-radius: 9px;
+  padding: 0.65rem 0.75rem;
+  color: #172033;
+  background: #fff;
+}
+
+.field input[aria-invalid="true"],
+.field select[aria-invalid="true"] {
+  border-color: #c74444;
+}
+
+.field-error {
+  margin: 0.35rem 0 0;
+  color: #b33434;
+  font-size: 0.78rem;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.8rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e3e7ee;
+}
+
+.form-actions p {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.form-actions button {
+  flex: 0 0 auto;
+}
+
+.output-block + .output-block {
+  margin-top: 1.5rem;
+}
+
+.output-game-title {
+  margin: 0.35rem 0 0;
+  color: #657087;
+  font-size: 0.9rem;
+}
+
+.output-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.output-title-row h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.button-copy {
+  flex: 0 0 auto;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.8rem;
+}
+
+.copy-status {
+  margin: -0.1rem 0 0.6rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.copy-status.success {
+  color: #247047;
+}
+
+.copy-status.error {
+  color: #b33434;
+}
+
+.output-block pre {
+  max-height: 32rem;
+  margin: 0;
+  overflow: auto;
+  border: 1px solid #dce2ec;
+  border-radius: 10px;
+  padding: 1rem;
+  color: #dbe5ff;
+  background: #172033;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.82rem;
+  line-height: 1.65;
+  white-space: pre;
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    width: min(100% - 1rem, 920px);
+    padding: 1.5rem 0 2rem;
+  }
+
+  .question-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-heading,
+  .form-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .button-secondary {
+    align-self: flex-start;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+
+  .output-title-row {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .button-copy {
+    align-self: flex-start;
+  }
+
+  .output-block pre {
+    padding: 0.8rem;
+    font-size: 0.76rem;
+  }
+}
