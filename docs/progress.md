@@ -1,6 +1,6 @@
 # 進捗ログ
 
-NodeRPG Studio の進捗を記録します。
+Game Spec Q&A Builder の進捗を記録します。
 
 進捗報告では、最低限以下を記載します。
 
@@ -17,49 +17,67 @@ NodeRPG Studio の進捗を記録します。
 
 ---
 
-## 2026-06-16 進捗
+## 2026-06-21 進捗
 
 ### 今回追加したもの
 
-- `GraphValidator` に通常ノードの connection port ルールを追加
-- `Start` / `ShowMessage` / `ShowBackground` / `ShowCharacter` / `PlayBGM` / `PlaySE` / `SetFlag` の `next` 接続制限を追加
-- 上記通常ノードで `next` 接続が複数ある場合は Error として扱うルールを追加
-- 通常ノードは接続なしの場合、終端ノードとして許可する方針を明確化
-- `Choice` ノードは既存どおり `options[].id` と一致する `fromPort` のみ許可
-- `Branch` ノードは `true` / `false` の接続を必須とし、それ以外の `fromPort` を Error として扱う方針を整理
-- `README.md` に connection port ルールを追記
-- `docs` 運用方針として、`design.md` / `spec.md` / `progress.md` を各プロジェクトに置く方針を整理
+- Game Spec Q&A Builder v0.1 を実装
+- 基本の避けゲーテンプレートを追加
+- Q&A形式の入力フォームを追加
+- 入力値から `GameSpec` を生成する処理を追加
+- 入力値から `spec.md` 相当のMarkdownを生成する処理を追加
+- `game-spec.json` 相当のJSON表示を追加
+- Markdownコピー機能を追加
+- JSONコピー機能を追加
+- 入力画面へ戻って再編集できる機能を追加
+- フォームの簡易バリデーションを追加
+- READMEを更新
+- GitHubリポジトリへpush
 
 ### 方針
 
-v0.1 では、RuntimeやEditorに依存せず、Core側で最低限のグラフ構造を保証する。
+v0.1 では、最終目標である「Q&Aからブラウザ上で遊べるゲームを作る」ための第一段階として、Q&Aからゲーム仕様Markdownと `game-spec.json` を生成するところまでを実装した。
 
-特に、ノード間接続の `fromPort` を明確に制限し、意図しない接続や分岐漏れを早い段階で検出できるようにする。
+現時点ではゲームのプレビューやコード生成は行わず、まずは以下の流れが成立することを優先した。
 
-また、開発進捗はDiscordへ直接投稿する方式ではなく、各プロジェクトの `docs/progress.md` に記録する方式へ移行する。  
-`progress.md` の更新内容は、GitHub Actions によりDiscordへ自動共有される想定。
+Q&A入力
+↓
+GameSpec生成
+↓
+Markdown生成
+↓
+JSON生成
+↓
+コピーして利用
 
-### 動作確認
+spec.md は人間が読む仕様書、game-spec.json は将来のCanvasプレビューやゲーム生成へ接続するための中間表現として扱う。
 
-- `dotnet build` 確認済み
-- サンプルJSONの読み込み確認済み
-- 接続ポートのバリデーション確認済み
-- 通常ノードの `next` 接続制限を確認済み
-- 通常ノードの複数 `next` 接続が Error になることを確認済み
-- `Choice` / `Branch` の接続ポート規則が想定どおり扱われることを確認済み
-
-### 現在の課題
-
-- connection port ルールのテストコード追加が必要
-- サンプルグラフを拡張し、正常系・異常系の確認パターンを増やす必要がある
-- `docs/design.md` / `docs/spec.md` の初期内容を整える必要がある
-- `progress.md` が肥大化した場合の整理方針を、運用しながら確認する
-
-### 次の作業
-
-- `GraphValidator` の connection port ルールに対するテストコードを追加
-- サンプルグラフを拡張
-- `docs/design.md` に設計方針を記載
-- `docs/spec.md` にノード仕様・接続仕様を記載
-- `progress.md` の自動Discord通知が想定どおり動作するか確認
-
+動作確認
+npm run build 確認済み
+テンプレート選択画面の表示を確認
+Q&Aフォーム9項目の表示を確認
+初期値が入っていることを確認
+入力値の変更を確認
+範囲外の数値でバリデーションエラーが出ることを確認
+正常値で出力画面へ進めることを確認
+Markdownが生成されることを確認
+JSONが生成されることを確認
+JSON内のnumber項目が文字列化されていないことを確認
+Markdownコピーを確認
+JSONコピーを確認
+戻って編集できることを確認
+GitHubへのpushを確認
+現在の課題
+v0.1ではまだゲームが動かない
+GameSpec からCanvasプレビューを生成する処理が未実装
+仕様パーツの合成は未実装
+仕様の不足検出・競合検出は未実装
+テンプレートは基本の避けゲー1種類のみ
+Q&Aテンプレートの追加・編集機能は未実装
+ノードビューは未実装
+次の作業
+v0.2として、GameSpec からCanvasプレビューを生成する
+基本の避けゲーをブラウザ上で実際に遊べるようにする
+プレイヤー速度、敵速度、敵出現間隔をプレビューへ反映する
+GameOver状態とリスタート処理をCanvas側に反映する
+v0.2完了後、仕様パーツ合成や複数テンプレート対応を検討する
