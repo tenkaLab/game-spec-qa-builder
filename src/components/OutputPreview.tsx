@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { GameSpec } from '../core/types'
+import { GamePreview } from './GamePreview'
 
 type CopyTarget = 'markdown' | 'json'
 
@@ -58,6 +59,8 @@ export function OutputPreview({
           戻って編集
         </button>
       </div>
+
+      <GamePreview spec={spec} />
 
       <div className="output-block">
         <div className="output-title-row">

@@ -37,7 +37,7 @@ function App() {
   return (
     <div className="app-shell">
       <header className="app-header">
-        <p className="app-version">バージョン 0.1</p>
+        <p className="app-version">バージョン 0.2</p>
         <h1>ゲーム仕様Q&amp;Aビルダー</h1>
         <p>質問に答えて、ゲーム仕様と設定JSONを作る</p>
       </header>

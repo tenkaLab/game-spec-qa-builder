@@ -39,6 +39,11 @@ button:hover {
   background: #2446b7;
 }
 
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 button:active {
   transform: translateY(1px);
 }
@@ -227,6 +232,64 @@ select:focus-visible {
   margin-top: 1.5rem;
 }
 
+.game-preview {
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid #e3e7ee;
+  padding-bottom: 1.75rem;
+}
+
+.preview-heading-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.preview-heading-row h3 {
+  margin: 0 0 0.3rem;
+  font-size: 1rem;
+}
+
+.preview-heading-row p {
+  margin: 0;
+  color: #657087;
+  font-size: 0.82rem;
+}
+
+.preview-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.6rem;
+}
+
+.preview-actions button {
+  padding: 0.6rem 0.85rem;
+  font-size: 0.82rem;
+}
+
+.canvas-frame {
+  width: min(100%, 640px);
+  overflow: hidden;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  background: #111827;
+  box-shadow: 0 10px 25px rgb(15 23 42 / 18%);
+}
+
+.canvas-frame canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  outline: none;
+}
+
+.canvas-frame canvas:focus-visible {
+  outline: 3px solid #9bb2ff;
+  outline-offset: -3px;
+}
+
 .output-game-title {
   margin: 0.35rem 0 0;
   color: #657087;
@@ -309,6 +372,15 @@ select:focus-visible {
     align-items: stretch;
     flex-direction: column;
     gap: 0.55rem;
+  }
+
+  .preview-heading-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .preview-actions {
+    flex-wrap: wrap;
   }
 
   .button-copy {
