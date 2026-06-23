@@ -1,193 +1,84 @@
-# 設計方針
+# Q&A Builder Design
 
-Game Spec Q&A Builder v0.1 の設計方針を記録します。
+## 状態の分類
 
----
+状態不整合を防ぐため、定義データ、正本状態、導出状態を分離します。
 
-## Product Goal
+## 定義データ
 
-本プロジェクトの最終目標は、Q&A形式でゲームの内容を決めることで、ブラウザ上で遊べるゲームを作れる制作支援ツールを実現することです。
+- `QuestionNode`: ユーザーへ提示する選択式質問
+- `AnswerOption`: Moduleの追加・除外と次質問候補を指定する選択肢
+- `SpecModule`: 移動、敵、ルール、スコアなどの再利用可能な仕様パーツ
+- `ConstraintRule`: Module間の必須条件、競合、排他を定義するルール
+- `GenerationParameterDefinition`: 仕様確定後に入力するParameterの定義
 
-v0.1 では、ゲーム生成の前段階として、Q&Aからゲーム仕様Markdownと `game-spec.json` を生成します。
+`AnswerOption`はコードを直接生成しません。選択肢は`SpecModule`だけを操作し、CodeGeneratorは確定後の`ResolvedSpec`を入力にします。
 
-`game-spec.json` は、将来的にCanvasプレビュー、ゲーム生成、コード生成、ノードビューなどへ接続するための中間表現として扱います。
+## 正本状態
 
----
-
-## 基本方針
-
-このプロジェクトでは、以下の方針で実装します。
-
-- Q&A形式でゲーム仕様を組み立てる
-- 最初は基本の避けゲーだけに絞る
-- v0.1では仕様MarkdownとJSON生成に集中する
-- `GameSpec` を将来のゲーム生成用中間表現として扱う
-- Markdownは人間向け、JSONは機械処理向けに分ける
-- ブラウザ上で完結する構成にする
-- v0.1ではバックエンドを持たない
-- v0.1ではデータ保存を行わない
-- 機能追加よりも、Q&Aから仕様が生成される流れの安定を優先する
-
----
-
-## v0.1 の位置づけ
-
-v0.1 は、最終目標である「Q&Aからゲームを作る」ための最初の段階です。
-
-v0.1 の目的は、以下を確認することです。
-
-- Q&A形式でゲーム仕様を入力できるか
-- 入力値から読みやすい仕様Markdownを生成できるか
-- 入力値から将来のゲーム生成に使えるJSONを生成できるか
-- 生成結果をコピーして外部で利用できるか
-
-v0.1では、まだゲームは動かしません。
-
-実際に遊べるゲーム生成は、v0.2以降で `GameSpec` をもとにCanvasプレビューとして実装する予定です。
-
----
-
-## 技術方針
-
-v0.1 では、以下の構成にします。
-
-- React
-- TypeScript
-- Vite
-- CSS
-- ローカルテンプレートデータ
-- バックエンドなし
-
-テンプレートやQ&A定義は、まずローカルのTypeScriptファイルとして管理します。
-
-理由は以下です。
-
-- v0.1ではテンプレートが1つだけのため
-- 実装を軽く保つため
-- JSON DBや外部APIを用意する必要がないため
-- 仕様変更をコードレビューしやすくするため
-
----
-
-## ファイル構成方針
-
-v0.1 では、概ね以下の構成を想定します。
+UIが正本として保持するのは`BuildState`だけです。
 
 ```txt
-src/
-├─ App.tsx
-├─ core/
-│  ├─ types.ts
-│  ├─ buildGameSpec.ts
-│  ├─ buildSpecMarkdown.ts
-│  └─ validateAnswers.ts
-├─ data/
-│  └─ dodgeGameBasic.ts
-├─ components/
-│  ├─ TemplateSelect.tsx
-│  ├─ QuestionForm.tsx
-│  └─ OutputPreview.tsx
-└─ styles/
-   └─ app.css
+BuildState
+├─ selectedAnswerIds
+├─ parameterValues
+└─ SelectionHistory
 ```
-関心ごとを以下のように分離します。
 
-data/: テンプレート定義
-core/: 型定義、仕様生成、Markdown生成、バリデーション
-components/: UIコンポーネント
-styles/: 表示調整
-Q&Aテンプレート方式を採用する理由
+- `selectedAnswerIds`: ユーザーが選択した回答
+- `parameterValues`: ユーザーが変更したParameter値
+- `SelectionHistory`: 回答選択・解除とParameter変更の履歴
 
-ノードを直接組む形式ではなく、Q&Aテンプレート方式を採用します。
+Moduleの追加・除外やDiagnostic生成は導出処理なので、履歴へ重複記録しません。
 
-理由は以下です。
+## 導出状態
 
-初心者が構造を知らなくても始めやすい
-「何を決めればいいか」を質問として提示できる
-仕様を自然に整理できる
-テンプレートを増やすことで対応できるゲーム範囲を拡張できる
-将来的に仕様パーツの組み合わせへ発展させやすい
+次の値は保存せず、`BuildState`と定義データからResolverで毎回導出します。
 
-ノードビューは捨てません。
+- `activeModuleIds`
+- `diagnostics`
+- `pendingQuestionIds`
+- `resolvedSpec`
+- `isGeneratable`
 
-ただし、v0.1時点では主役にせず、将来的に GameSpec の可視化や確認ビューとして扱います。
+## Resolver方針
 
-GameSpec を中間表現にする理由
+Resolverは選択済み`AnswerOption`からModuleを合成し、`ConstraintRule`を評価します。
 
-GameSpec は、単なる出力JSONではなく、将来のゲーム生成に接続するための中間表現です。
+- 不明なAnswer、Module、ParameterはDiagnosticにする
+- `requires`、`conflicts`、`exclusive_group`を評価する
+- Diagnosticが示す解消質問を`pendingQuestionIds`へ集約する
+- error Diagnosticがなければ`ResolvedSpec`を生成する
+- 回答、Module、Diagnostic、追加質問の重複を排除する
 
-想定する接続先:
+`activeModuleIds`、`diagnostics`、`resolvedSpec`を正本として保存しないことで、ユーザー選択との不整合を防ぎます。
 
-Canvasプレビュー
-ブラウザ上で遊べるゲーム生成
-HTML出力
-コード生成
-ノードビュー
-仕様検証
-仕様パーツ合成
+## CodeGenerator方針
 
-このため、GameSpec は人間が読む文章ではなく、機械処理しやすい構造にします。
+CodeGeneratorは`DefinitionData`、`ResolvedSpec`、`parameterValues`から次を返します。
 
-Markdown と JSON の役割分担
+- `CodeArtifact[]`: 生成されたファイル群
+- `GenerationTrace`: 仕様・Parameterと生成コードの対応情報
 
-生成するMarkdownとJSONは、役割を分けます。
+Parameter値は、ユーザー値があればそれを使用し、未設定なら`GenerationParameterDefinition.defaultValue`を使用します。有効Moduleに紐づくParameterだけを生成へ反映します。
 
-Markdown
+`GenerationTraceEntry.generatedRegionId`は安定IDとし、生成コード内の`generated-region`コメントと対応させます。行番号は補助情報であり、追跡の正本にはしません。
 
-人間が読むための仕様書です。
+`validateGenerationOutput`は次を検証します。
 
-用途:
+- Traceが参照するArtifactの存在
+- `generatedRegionId`が空でないこと
+- 同一Artifact内のregion IDが重複しないこと
+- Traceに生成元Moduleが存在すること
 
-仕様確認
-チーム共有
-docs/spec.md への転記
-開発者への説明
-JSON
+## ProjectGraph方針
 
-ツールが処理するための中間データです。
+ProjectGraphはノード内に双方向の依存情報を重複保存せず、`nodes`と`edges`を分離します。
 
-用途:
+```txt
+ProjectGraph
+├─ nodes
+└─ edges
+```
 
-Canvasプレビュー
-ゲーム生成
-設定値反映
-仕様検証
-将来的なコード生成
-
-そのため、Markdownは自然文、JSONは識別子と構造化データを優先します。
-
-バリデーション方針
-
-v0.1では、最低限のフォーム入力検証だけを行います。
-
-検証対象:
-
-必須入力
-number型の最小値・最大値
-select型の選択肢存在チェック
-
-v0.1では、仕様パーツ間の不足検出や競合検出は行いません。
-
-それらは、仕様パーツ合成を導入するv0.3以降で扱います。
-
-UI方針
-
-v0.1のUIは、機能検証を優先します。
-
-方針:
-
-日本語表示に統一する
-シンプルな画面構成にする
-スマホ幅でも大きく崩れないようにする
-フォームの入力項目とエラーが分かりやすいようにする
-出力されたMarkdownとJSONをコピーしやすくする
-
-過度な装飾や複雑なUIは、v0.1では扱いません。
-
-今後の設計メモ
-v0.2では GameSpec からCanvasプレビューを生成する
-v0.3では仕様パーツ合成を検討する
-v0.4では複数テンプレート対応を検討する
-v0.5以降でノードビューを検討する
-NodeRPG Studio の EventGraph / GraphValidator は、将来的に可視化・検証基盤として再利用できる可能性がある
-Q&A収集型ゲームへの派生も検討対象とする
+逆方向の影響範囲は保存せず、必要な時点でedgeをグラフ探索して算出します。v0.1では型定義のみで、本格生成やノードUIは未実装です。

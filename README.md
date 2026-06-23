@@ -1,43 +1,27 @@
-# Game Spec Q&A Builder
+# Q&A Builder
 
-質問に答えることで、ゲーム仕様と設定JSONを生成し、ブラウザ上で動作を確認できるゲーム制作支援ツールです。
+Q&A Builderは、選択式Q&Aでゲーム仕様を組み立て、確定仕様とParameterから実行可能コードを生成する設計支援・コード生成ツールです。
 
-## v0.2
-
-v0.2では、基本の避けゲーテンプレートとCanvasプレビューに対応しています。
-
-できること:
-
-- Q&A形式で避けゲー仕様を入力
-- `spec.md` 相当のMarkdownを生成・コピー
-- `game-spec.json` 相当のJSONを生成・コピー
-- 生成したGameSpecによる避けゲームの実行
-- 矢印キーまたはWASDによるプレイヤー移動
-- 敵の出現、落下、衝突判定
-- 生存時間スコアとリスタート
+現在のv0.1では、仕様合成・診断・Parameter入力・最小Canvasゲーム生成・Artifact確認と保存までの経路を実装しています。
 
 ## 起動方法
-
-Node.jsとnpmを用意し、次のコマンドを実行してください。
 
 ```bash
 npm install
 npm run dev
 ```
 
-本番用ビルドは次のコマンドで確認できます。
+## 確認コマンド
 
 ```bash
+npm run check:resolver
 npm run build
 ```
 
-## v0.2でやらないこと
+`npm run build`は依存関係を取得した環境で実行してください。
 
-- 本格的なゲームエンジン化
-- HTMLエクスポート、コード生成
-- ノードビュー
-- 複数テンプレート、テンプレート編集
-- 仕様パーツ合成、不足検出、競合検出
-- 画像素材、サウンド、スマホタッチ操作
-- ハイスコア、オンライン保存
-- AIチャット、バックエンド、ログイン、データ保存
+## Documents
+
+- [Specification](docs/spec.md)
+- [Design](docs/design.md)
+- [Progress](docs/progress.md)
